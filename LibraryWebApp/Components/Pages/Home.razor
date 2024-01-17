@@ -1,0 +1,28 @@
+﻿@page "/"
+@inject HttpClient HttpClient
+
+<PageTitle>Home</PageTitle>
+
+<h1>Library Books</h1>
+
+<button class="btn btn-primary" @onclick="GetBooks"> Get Books </button>
+
+@if(_books is not null)
+{
+    <ul>
+        @foreach (var book in _books)
+        {
+            <li>@book</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<string>? _books;
+
+
+    private async Task GetBooks(){
+        _books = await HttpClient.GetFromJsonAsync<List<string>>("http://localhost:5091/api/books");
+    }
+
+}
