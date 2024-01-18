@@ -1,0 +1,21 @@
+﻿@page
+@model IndexModel
+@inject HttpClient HttpClient
+@{
+    ViewData["Title"] = "Home page";
+    var bookTitles = await HttpClient.GetFromJsonAsync<List<string>>("http://localhost:5091/api/books");
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+@if (bookTitles is not null)
+{
+    <ul>
+        @foreach (var bookTitle in bookTitles)
+        {
+            <li>@bookTitle</li>
+        }
+    </ul>
+}

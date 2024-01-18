@@ -9,17 +9,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["LibraryWebApi/LibraryWebApi.csproj", "LibraryWebApi/"]
-RUN dotnet restore "./LibraryWebApi/./LibraryWebApi.csproj"
+COPY ["LibraryWebApp/LibraryWebApp.csproj", "LibraryWebApp/"]
+RUN dotnet restore "./LibraryWebApp/./LibraryWebApp.csproj"
 COPY . .
-WORKDIR "/src/LibraryWebApi"
-RUN dotnet build "./LibraryWebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/LibraryWebApp"
+RUN dotnet build "./LibraryWebApp.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./LibraryWebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./LibraryWebApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "LibraryWebApi.dll"]
+ENTRYPOINT ["dotnet", "LibraryWebApp.dll"]
