@@ -6,6 +6,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<HttpClient>();
 builder.Services.AddCors();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

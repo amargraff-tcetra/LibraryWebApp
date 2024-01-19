@@ -1,19 +1,32 @@
 ﻿@page
 @model IndexModel
 @inject HttpClient HttpClient
+
 @{
     ViewData["Title"] = "Home page";
-    var bookTitles = await HttpClient.GetFromJsonAsync<List<string>>("http://localhost:5091/api/books");
+
+    // var bookTitles = new List<string>();
+
+    // async Task GetBooks()
+    // {
+    //     bookTitles = await HttpClient.GetFromJsonAsync<List<string>>("http://localhost:5091/api/books");
+    // }
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
 </div>
 
-@if (bookTitles is not null)
+<form asp-page-handler="Books" method="post">
+    <button> Get Books </button>
+</form>
+
+
+
+@if (@Model.bookTitles is not null)
 {
     <ul>
-        @foreach (var bookTitle in bookTitles)
+        @foreach (var bookTitle in @Model.bookTitles)
         {
             <li>@bookTitle</li>
         }
