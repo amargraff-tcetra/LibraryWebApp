@@ -20,3 +20,13 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.flex-parent {
+    display: flex;
+    margin:2px;
+}
+
+.flex-child {
+    flex: 2;
+    margin: 2px;
+}

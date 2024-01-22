@@ -2,6 +2,7 @@
 using LibraryApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.Collections;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,14 +15,20 @@ namespace LibraryApi.Controllers
     {
         // GET: api/books
         [HttpGet]
-        public async Task<List<string>> Get()
+        public async Task<List<Book>> Get([FromQuery] string? key)
         {
-            //var db = new SqlConnection("Data Source=127.0.0.1,1433;Initial Catalog=MyLibrary;Persist Security Info=True;User ID=sa;Password=SQLserver123!;TrustServerCertificate=True");
-            var db = new SqlConnection("Data Source=library_database,1433;Initial Catalog=MyLibrary;Persist Security Info=True;User ID=sa;Password=SQLserver123!;TrustServerCertificate=True");
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? throw new ArgumentException("Missing DB_CONNECTION_STRING environment variable");
+            var db = new SqlConnection(connectionString);
 
-            var books = await db.QueryAsync<Book>("SELECT * FROM book");
+            var sql = string.IsNullOrWhiteSpace(key) 
+                ? "SELECT * FROM book b JOIN author a ON b.author_id = a.id" 
+                : "SELECT * FROM book b JOIN author a ON b.author_id = a.id WHERE b.title LIKE '%' + @key +'%'";
+            var parameters = new DynamicParameters();
+            parameters.Add("@key", key);
 
-            return books.Select(b => b.title).ToList();
+            var books = await db.QueryAsync<Book, Author, Book>(sql, (b, a) => {b.author = a; return b;}, parameters);
+
+            return books.ToList();
 
             //return new List<string>
             //{
@@ -34,14 +41,10 @@ namespace LibraryApi.Controllers
         }
 
         // GET api/<BooksController>/5
-        [HttpGet("{key}")]
-        public async Task<List<string>> Get(string key)
+        [HttpGet("{id}")]
+        public string Get()
         {
-            var db = new SqlConnection("Data Source=library_database,1433;Initial Catalog=MyLibrary;Persist Security Info=True;User ID=sa;Password=SQLserver123!;TrustServerCertificate=True");
-
-            var books = await db.QueryAsync<Book>($"SELECT * FROM book WHERE title LIKE '%{key}%'");
-
-            return books.Select(b => b.title).ToList();
+            return "value";
         }
 
         // POST api/<BooksController>

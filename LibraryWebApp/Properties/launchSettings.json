@@ -22,7 +22,8 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "LIBRARY_API_HOST": "https://localhost:7108"
       }
     },
     "Docker": {
@@ -31,7 +32,8 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8080",
+        "LIBRARY_API_HOST": "http://library-api:8080/"
       },
       "publishAllPorts": true,
       "useSSL": true

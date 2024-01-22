@@ -34,7 +34,8 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8080",
+        "DB_CONNECTION_STRING": "Data Source=library_database,1433;Initial Catalog=MyLibrary;Persist Security Info=True;User ID=sa;Password=SQLserver123!;TrustServerCertificate=True"
       },
       "publishAllPorts": true,
       "useSSL": true
@@ -45,7 +46,8 @@
       "launchUrl": "https://localhost:7108/swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:7108;http://localhost:5261"
+        "ASPNETCORE_URLS": "https://localhost:7108;http://localhost:5261",
+        "DB_CONNECTION_STRING": "Data Source=127.0.0.1,1433;Initial Catalog=MyLibrary;Persist Security Info=True;User ID=sa;Password=SQLserver123!;TrustServerCertificate=True",
       },
       "distributionName": ""
     }

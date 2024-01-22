@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LibraryApi.Models
+namespace LibraryWebApp.Models
 {
-    [Table(name: "book")]
+    [Table(name:"book")]
     public class Book
     {
         //[Column(name:"id")]

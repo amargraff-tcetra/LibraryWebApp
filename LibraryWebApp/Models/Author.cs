@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LibraryApi.Models
+namespace LibraryWebApp.Models
 {
     public class Author
     {
@@ -18,6 +18,6 @@ namespace LibraryApi.Models
         public string last_name { get; set; } = string.Empty;
         public DateTime date_of_birth { get; set; }
 
-        public Author() { }
+        public Author(){}
     }
 }

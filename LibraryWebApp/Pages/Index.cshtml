@@ -1,9 +1,16 @@
 ﻿@page
+@using LibraryWebApp.Models
 @model IndexModel
 @inject HttpClient HttpClient
 
+
 @{
     ViewData["Title"] = "Home page";
+
+    IActionResult DisplayBook(int selectedBookId)
+    {
+        return Page();
+    }
 }
 
 <div class="text-center">
@@ -14,26 +21,81 @@
     <button> Get Books </button>
 </form> *@
 
-<form asp-page-handler="Books" method="post">
-    <fieldset>
-        <legend>Search Book</legend>
-        <div>
-            <label for="BookTitle">Book Title:</label>
-            <input type="text" name="bookTitleKey" value="" />
-        </div>
-        <div>
-            <label>&nbsp;</label>
-            <input type="submit" value="Submit" class="submit" />
-        </div>
-    </fieldset>
-</form>
+<div class="parent flex-parent">
+    <form asp-page-handler="Books" method="post" class="child flex-child">
+        <fieldset class="form-control">
+            <legend>Search by Title</legend>
+            <div>
+                <label for="BookTitle">Book Title:</label>
+                <input type="text" name="bookTitleKey" value="" />
+            </div>
+            <div>
+                <label>&nbsp;</label>
+                <input type="submit" value="Search" class="submit btn-outline-dark" />
+            </div>
+        </fieldset>
+    </form>
 
-@if (@Model.BookTitles is not null)
+    <form asp-page-handler="BooksByAuthor" method="post" class="child flex-child">
+        <fieldset class="form-control">
+            <legend>Search by Author</legend>
+            <div>
+                <label for="AuthorName">Author Name:</label>
+                <input type="text" name="authorNameKey" value="" />
+            </div>
+            <div>
+                <label>&nbsp;</label>
+                <input type="submit" value="Search" class="submit btn-outline-dark" />
+            </div>
+        </fieldset>
+    </form>
+
+    <form asp-page-handler="BooksByPublisher" method="post" class="child flex-child">
+        <fieldset class="form-control">
+            <legend>Search by Publisher</legend>
+            <div>
+                <label for="PublisherName">Publisher Name:</label>
+                <input type="text" name="publisherNameKey" value="" />
+            </div>
+            <div>
+                <label>&nbsp;</label>
+                <input type="submit" value="Search" class="submit btn-outline-dark" />
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+@if (@Model.Books is not null && @Model.Books.Count > 0 && @Model.SelectedBook is null)
 {
-    <ul>
-        @foreach (var bookTitle in @Model.BookTitles)
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td><b>Book Title</b></td>
+                <td><b>Author</b></td>
+                <td></td>
+            </tr>
+        </thead>
+
+        @foreach (var book in @Model.Books)
         {
-            <li>@bookTitle</li>
+            <tbody >
+                <tr>
+                    <td>@book.title</td>
+                    <td>@book.author.first_name @book.author.last_name</td>
+                    <td>
+                        <button class="btn-outline-dark" onclick="@(DisplayBook(book.id))">View</button>
+                    </td>
+                </tr>
+            </tbody>
         }
-    </ul>
+    </table>
+}
+
+@if (@Model.SelectedBook is not null)
+{
+    <center>
+        <div class="form-control">
+            <p><b>Title: </b>@Model.SelectedBook.title </p>
+        </div>
+    </center>
 }

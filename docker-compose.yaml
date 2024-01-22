@@ -7,6 +7,8 @@
     container_name: library_app
     ports: 
       - 5237:8080
+    environment: 
+      LIBRARY_API_HOST: "http://library-api:8080/"
   library_api:
     build:
       context: ./LibraryApi/.
@@ -15,6 +17,8 @@
     container_name: library-api
     ports: 
       - 7108:8080
+    environment:
+      DB_CONNECTION_STRING: "Data Source=library_database,1433;Initial Catalog=MyLibrary;Persist Security Info=True;User ID=sa;Password=SQLserver123!;TrustServerCertificate=True"
   library_database:
     image: mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04
     container_name: library_database

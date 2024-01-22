@@ -8,6 +8,7 @@
     <UserSecretsId>f990f8dd-d251-43d5-a9d3-4999f423fa90</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <InvariantGlobalization>false</InvariantGlobalization>
+	<DockerfileRunEnvironmentFiles>Dockerfile.env</DockerfileRunEnvironmentFiles>
   </PropertyGroup>
 
   <ItemGroup>

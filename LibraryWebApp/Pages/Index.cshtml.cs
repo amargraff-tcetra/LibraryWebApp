@@ -1,3 +1,4 @@
+using LibraryWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,30 +8,42 @@ namespace LibraryWebApp.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         public HttpClient httpClient { get; set; }
-        public List<string>? BookTitles { get; set; } = new List<string>();
+        public List<Book> Books { get; set; } = new List<Book>();
+        public Book? SelectedBook { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, HttpClient httpClient)
         {
             _logger = logger;
             this.httpClient = httpClient;
+            this.httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("LIBRARY_API_HOST") ?? throw new ArgumentException("Missing LIBRARY_API_HOST environment variable"));
         }
 
         public void OnGet()
         {
-
         }
 
-        public async Task<IActionResult> OnPostBooks(string bookTitleKey)
+        public async Task<IActionResult> OnPostBooks(string? bookTitleKey)
         {
-            if (string.IsNullOrWhiteSpace(bookTitleKey)) {
-                BookTitles = await httpClient.GetFromJsonAsync<List<string>>("http://library-api:8080/api/books");
-            }
-            else
-            {
-                BookTitles = await httpClient.GetFromJsonAsync<List<string>>($"http://library-api:8080/api/books/{bookTitleKey.Trim()}");
-            }
-            
+            SelectedBook = null;
+            Books = await httpClient.GetFromJsonAsync<List<Book>>($"api/books?key={bookTitleKey?.Trim() ?? string.Empty}") ?? new List<Book>();
+            return Page();
+        }
 
+        public async Task<IActionResult> OnPostBooksByAuthor(string? authorNameKey)
+        {
+            SelectedBook = null;
+            Books = await httpClient.GetFromJsonAsync<List<Book>>($"api/books?key=") ?? new List<Book>();
+            authorNameKey = authorNameKey?.Trim() ?? string.Empty;
+            Books = Books.Where(b => b.author.first_name.Contains(authorNameKey, StringComparison.InvariantCultureIgnoreCase) || b.author.last_name.Contains(authorNameKey, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            return Page();
+        }        
+        
+        public async Task<IActionResult> OnPostBooksByPublisher(string? publisherNameKey)
+        {
+            SelectedBook = null;
+            Books = await httpClient.GetFromJsonAsync<List<Book>>($"api/books?key=") ?? new List<Book>();
+            publisherNameKey = publisherNameKey?.Trim() ?? string.Empty;
+            Books = Books.Where(b => b.publisher.Contains(publisherNameKey, StringComparison.InvariantCultureIgnoreCase)).ToList();
             return Page();
         }
     }
