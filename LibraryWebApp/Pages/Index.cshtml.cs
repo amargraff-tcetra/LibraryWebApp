@@ -22,8 +22,8 @@ namespace LibraryWebApp.Pages
 
         public async Task<IActionResult> OnPostBooks()
         {
-            //bookTitles = await httpClient.GetFromJsonAsync<List<string>>("http://localhost:5091/api/books");
-            bookTitles = await httpClient.GetFromJsonAsync<List<string>>("http://library_api:5091/api/books");
+            //bookTitles = await httpClient.GetFromJsonAsync<List<string>>("http://localhost:7108/api/books");
+            bookTitles = await httpClient.GetFromJsonAsync<List<string>>("http://library-api:8080/api/books");
             return Page();
         }
     }

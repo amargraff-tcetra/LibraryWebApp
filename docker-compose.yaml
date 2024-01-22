@@ -1,0 +1,45 @@
+﻿services:
+
+  library_app:
+    build: 
+      context: ./LibraryWebApp/.
+    image: library_app
+    container_name: library_app
+    ports: 
+      - 5237:8080
+  library_api:
+    build:
+      context: ./LibraryApi/.
+      dockerfile: Dockerfile
+    image: library_api
+    container_name: library-api
+    ports: 
+      - 7108:8080
+  library_database:
+    image: mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04
+    container_name: library_database
+    environment:
+      - ACCEPT_EULA=true
+      - MSSQL_SA_PASSWORD=SQLserver123!
+    ports: 
+      - 1433:1433
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools/bin/sqlcmd -S library_database -U sa -P SQLserver123! -Q 'SELECT 1' || exit 1"
+        ]
+      interval: 5s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
+  database-seed:
+    image: mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04
+    volumes:
+     - ./Database:/Database
+    depends_on:
+      library_database:
+        condition: service_healthy
+    command:
+      bash -c '/opt/mssql-tools/bin/sqlcmd -S library_database -U sa -P SQLserver123! -d master -i /Database/MyLibrary_DB_Script.sql'
+    container_name: database-seed

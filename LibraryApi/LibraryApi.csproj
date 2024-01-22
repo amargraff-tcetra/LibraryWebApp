@@ -1,17 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>8e7e8008-7139-4d5d-87ab-0b2fdca01a71</UserSecretsId>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <UserSecretsId>f990f8dd-d251-43d5-a9d3-4999f423fa90</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.28" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
 </Project>
