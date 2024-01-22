@@ -34,10 +34,14 @@ namespace LibraryApi.Controllers
         }
 
         // GET api/<BooksController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{key}")]
+        public async Task<List<string>> Get(string key)
         {
-            return "value";
+            var db = new SqlConnection("Data Source=library_database,1433;Initial Catalog=MyLibrary;Persist Security Info=True;User ID=sa;Password=SQLserver123!;TrustServerCertificate=True");
+
+            var books = await db.QueryAsync<Book>($"SELECT * FROM book WHERE title LIKE '%{key}%'");
+
+            return books.Select(b => b.title).ToList();
         }
 
         // POST api/<BooksController>

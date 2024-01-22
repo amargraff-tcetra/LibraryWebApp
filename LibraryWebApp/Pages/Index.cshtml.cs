@@ -7,7 +7,7 @@ namespace LibraryWebApp.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         public HttpClient httpClient { get; set; }
-        public List<string>? bookTitles { get; set; } = new List<string>();
+        public List<string>? BookTitles { get; set; } = new List<string>();
 
         public IndexModel(ILogger<IndexModel> logger, HttpClient httpClient)
         {
@@ -20,10 +20,17 @@ namespace LibraryWebApp.Pages
 
         }
 
-        public async Task<IActionResult> OnPostBooks()
+        public async Task<IActionResult> OnPostBooks(string bookTitleKey)
         {
-            //bookTitles = await httpClient.GetFromJsonAsync<List<string>>("http://localhost:7108/api/books");
-            bookTitles = await httpClient.GetFromJsonAsync<List<string>>("http://library-api:8080/api/books");
+            if (string.IsNullOrWhiteSpace(bookTitleKey)) {
+                BookTitles = await httpClient.GetFromJsonAsync<List<string>>("http://library-api:8080/api/books");
+            }
+            else
+            {
+                BookTitles = await httpClient.GetFromJsonAsync<List<string>>($"http://library-api:8080/api/books/{bookTitleKey.Trim()}");
+            }
+            
+
             return Page();
         }
     }

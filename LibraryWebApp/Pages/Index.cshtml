@@ -4,29 +4,34 @@
 
 @{
     ViewData["Title"] = "Home page";
-
-    // var bookTitles = new List<string>();
-
-    // async Task GetBooks()
-    // {
-    //     bookTitles = await HttpClient.GetFromJsonAsync<List<string>>("http://localhost:5091/api/books");
-    // }
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Welcome to the Library</h1>
 </div>
 
-<form asp-page-handler="Books" method="post">
+@* <form  asp-page-handler="Books" method="post">
     <button> Get Books </button>
+</form> *@
+
+<form asp-page-handler="Books" method="post">
+    <fieldset>
+        <legend>Search Book</legend>
+        <div>
+            <label for="BookTitle">Book Title:</label>
+            <input type="text" name="bookTitleKey" value="" />
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </div>
+    </fieldset>
 </form>
 
-
-
-@if (@Model.bookTitles is not null)
+@if (@Model.BookTitles is not null)
 {
     <ul>
-        @foreach (var bookTitle in @Model.bookTitles)
+        @foreach (var bookTitle in @Model.BookTitles)
         {
             <li>@bookTitle</li>
         }
