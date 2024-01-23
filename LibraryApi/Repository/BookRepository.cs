@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using LibraryApi.Models;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Data.SqlClient;
 using System.Data;
 

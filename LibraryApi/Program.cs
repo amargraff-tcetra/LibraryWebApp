@@ -1,18 +1,18 @@
 using LibraryApi;
+using LibraryApi.Models;
+using LibraryApi.Repository;
 using LibraryApi.Services;
-using Microsoft.Extensions.DependencyInjection;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<Settings>(builder.Configuration);
-builder.Services.AddSingleton<BookService>();
+builder.Services.AddSingleton<IRepository<Book>, BookRepository>();
+builder.Services.AddSingleton<IService<Book>, BookService>();
+builder.Logging.ClearProviders().AddConsole();
 
 var app = builder.Build();
 
