@@ -3,6 +3,7 @@ using LibraryApi.Repository;
 using LibraryApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Refit;
 using System.Net;
 using System.Net.Http;
 
@@ -21,8 +22,7 @@ namespace LibraryApi.Controllers
             _logger = logger;
         }
 
-        // GET: api/books
-        [HttpGet]
+        [Get("/books")]
         public async Task<List<Book>> Get([FromQuery] string? key)
         {
             var books = new List<Book>();
@@ -38,16 +38,14 @@ namespace LibraryApi.Controllers
             return books ?? new List<Book>();
         }
 
-        // GET api/books/5
-        [HttpGet("{id}")]
+        [Get("/books/{id}")]
         public async Task<Book> Get(int id)
         {
             return await _bookService.GetAsync(id);
         }
 
-        // POST api/<BooksController>
-        [HttpPost]
-        public void Post([FromBody] Book book)
+        [Post("/books")]
+        public async Task Post([FromBody] Book book)
         {
             //Book? book = JsonConvert.DeserializeObject<Book>(value);
 
@@ -59,7 +57,7 @@ namespace LibraryApi.Controllers
 
         // PUT api/<BooksController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Book book)
+        public async Task Put(int id, [FromBody] Book book)
         {
             //Book? book = JsonConvert.DeserializeObject<Book>(value);
 
@@ -71,9 +69,9 @@ namespace LibraryApi.Controllers
 
         // DELETE api/<BooksController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            _bookService.DeleteAsync(id);
+            await _bookService.DeleteAsync(id);
         }
     }
 }
