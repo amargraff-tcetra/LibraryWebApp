@@ -1,15 +1,22 @@
+using LibraryWebApp.Pages;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var libraryApiHost = builder.Configuration.GetSection("LIBRARY_API_HOST").Value ?? string.Empty;
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<HttpClient>();
+builder.Services.AddHttpClient("library_api", c =>
+{
+    c.BaseAddress = new Uri(libraryApiHost);
+});
+
 builder.Services.AddCors();
 
-//DI, Ilogger, BookService
-//http client factory, refit
-//IConfiguration (remove reference to environment variables)
-// Refactor connection strings
+//DI, Ilogger, BookService [X]
+//http client factory [X], refit 
+//IConfiguration (remove reference to environment variables) [X]
+// Refactor connection strings [X]
 // One Example of EntityFramework
 
 var app = builder.Build();
