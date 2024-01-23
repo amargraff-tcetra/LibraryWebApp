@@ -11,11 +11,12 @@ namespace LibraryWebApp.Pages
         public List<Book> Books { get; set; } = new List<Book>();
         public Book? SelectedBook { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, HttpClient httpClient)
+        public IndexModel(ILogger<IndexModel> logger, HttpClient httpClient, IConfiguration configuration)
         {
             _logger = logger;
             this.httpClient = httpClient;
-            this.httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("LIBRARY_API_HOST") ?? throw new ArgumentException("Missing LIBRARY_API_HOST environment variable"));
+            var libraryHostBaseUri = configuration.GetSection("LIBRARY_API_HOST").Value ?? string.Empty;
+            this.httpClient.BaseAddress = new Uri(libraryHostBaseUri);
         }
 
         public void OnGet()
