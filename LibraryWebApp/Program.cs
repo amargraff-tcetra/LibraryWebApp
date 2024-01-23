@@ -10,6 +10,7 @@ builder.Services.AddCors();
 //http client factory, refit
 //IConfiguration (remove reference to environment variables)
 // Refactor connection strings
+// One Example of EntityFramework
 
 var app = builder.Build();
 
