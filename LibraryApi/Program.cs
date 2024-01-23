@@ -2,6 +2,7 @@ using LibraryApi;
 using LibraryApi.Models;
 using LibraryApi.Repository;
 using LibraryApi.Services;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.Configure<Settings>(builder.Configuration);
 builder.Services.AddSingleton<IRepository<Book>, BookRepository>();
 builder.Services.AddSingleton<IService<Book>, BookService>();
 builder.Logging.ClearProviders().AddConsole();
