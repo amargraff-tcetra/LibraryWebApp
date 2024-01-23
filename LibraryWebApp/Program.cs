@@ -2,10 +2,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient();//http client factory, refit
 builder.Services.AddScoped<HttpClient>();
 builder.Services.AddCors();
 
+//DI, Ilogger, BookService
+//http client factory, refit
+//IConfiguration (remove reference to environment variables)
+// Refactor connection strings
 
 var app = builder.Build();
 
