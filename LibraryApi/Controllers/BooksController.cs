@@ -22,7 +22,7 @@ namespace LibraryApi.Controllers
             _logger = logger;
         }
 
-        [Get("/books")]
+        [HttpGet]
         public async Task<List<Book>> Get([FromQuery] string? key)
         {
             var books = new List<Book>();
@@ -38,13 +38,13 @@ namespace LibraryApi.Controllers
             return books ?? new List<Book>();
         }
 
-        [Get("/books/{id}")]
+        [HttpGet("{id}")]
         public async Task<Book> Get(int id)
         {
             return await _bookService.GetAsync(id);
         }
 
-        [Post("/books")]
+        [HttpPost]
         public async Task Post([FromBody] Book book)
         {
             //Book? book = JsonConvert.DeserializeObject<Book>(value);
