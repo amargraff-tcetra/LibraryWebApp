@@ -10,6 +10,7 @@ namespace LibraryApi.Services
         private IRepository<Book> _bookRepository { get; set; }
         private ILogger _logger { get; set; }
 
+
         public BookService(IRepository<Book> bookRepository, ILogger<BookService> logger)
         {
             _bookRepository = bookRepository;
@@ -49,8 +50,7 @@ namespace LibraryApi.Services
             Book book = new Book();
             try
             {
-                BookRepository bookRepository = new BookRepository();
-                book = await bookRepository.GetAsync(id);
+                book = await _bookRepository.GetAsync(id);
             }
             catch (Exception ex)
             {

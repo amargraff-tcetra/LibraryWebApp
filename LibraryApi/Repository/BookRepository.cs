@@ -7,16 +7,14 @@ namespace LibraryApi.Repository
 {
     public class BookRepository : IRepository<Book>
     {
-        IDbConnection _connection;
-        readonly string _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? throw new ArgumentNullException("Missing DB_CONNECTION_STRING in environment variables");
-        
+        IDbConnection _connection;        
         public static string INSERT_BOOK = "INSERT INTO book (author_id, title, publisher, publication_date, paperback, copies) VALUES (@author_id, @title, @publisher, @publication_date, @paperback, @copies); SELECT SCOPE_IDENTITY();";
         public static string SELECT_BOOK = "SELECT * FROM book b JOIN author a ON b.author_id = a.id";
         public static string SELECT_BOOK_KEY = "SELECT * FROM book b JOIN author a ON b.author_id = a.id WHERE b.title LIKE '%' + @key + '%'";
 
-        public BookRepository()
+        public BookRepository(IConfiguration configuration)
         {
-            _connection = new SqlConnection(_connectionString);
+            _connection = new SqlConnection(configuration.GetSection("DB_CONNECTION_STRING").Value);
         }
 
         public async Task<int> AddAsync(Book book)
