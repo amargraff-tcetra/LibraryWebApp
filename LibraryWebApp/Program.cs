@@ -1,4 +1,4 @@
-using LibraryWebApp.Models;
+using LibraryWebApp.Abstraction;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +7,7 @@ var libraryApiHost = builder.Configuration.GetSection("LIBRARY_API_HOST").Value 
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddHttpClient("library_api", c =>
+builder.Services.AddRefitClient<IBookClient>().ConfigureHttpClient(c =>
 {
     c.BaseAddress = new Uri(libraryApiHost);
 });

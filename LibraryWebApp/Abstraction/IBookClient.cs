@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LibraryWebApp.Models;
 using Refit;
 
-namespace LibraryWebApp.Models
+namespace LibraryWebApp.Abstraction
 {
-    public interface IBookApi
+    public interface IBookClient
     {
         [Get("/api/books")]
         Task<List<Book>> Get(string? key);
@@ -14,10 +14,10 @@ namespace LibraryWebApp.Models
         [Post("/api/books")]
         Task Post(Book book);
 
-        [Put("{id}")]
+        [Put("/api/books/{id}")]
         Task Put(int id, Book book);
 
-        [Delete("{id}")]
+        [Delete("/api/books/{id}")]
         Task Delete(int id);
     }
 }
