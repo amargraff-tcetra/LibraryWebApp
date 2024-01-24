@@ -1,15 +1,22 @@
-﻿using LibraryApi.Models;
+﻿using Dapper;
+using LibraryApi.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace LibraryApi.Repository
 {
     public class AuthorRepository : IRepository<Author>
     {
+        IDbConnection _connection;
         private readonly LibraryContext _context;
 
-        public AuthorRepository(LibraryContext context)
+        private static string SELECT_AUTHORS = "SELECT a.*, b.* FROM author a JOIN book b ON a.id = b.author_id";
+
+        public AuthorRepository(LibraryContext context, IConfiguration configuration)
         {
             _context = context;
+            _connection = new SqlConnection(configuration.GetSection("DB_CONNECTION_STRING").Value);
         }
 
         public async Task<int> AddAsync(Author entity)
@@ -35,6 +42,8 @@ namespace LibraryApi.Repository
                 .Include(a => a.books)
                 .Where(a => EF.Functions.Like(a.first_name, $"%{key}%") || EF.Functions.Like(a.last_name, $"%{key}%"))
                 .ToListAsync();
+
+            var dapper_authors = await _connection.QueryAsync<Author, Book, Author>(SELECT_AUTHORS, (a, b) => {a.books.Add(b); return a; }, splitOn: "author_id");
 
             return authors;
         }
