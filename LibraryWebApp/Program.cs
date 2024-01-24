@@ -11,6 +11,11 @@ builder.Services.AddRefitClient<IBookClient>().ConfigureHttpClient(c =>
 {
     c.BaseAddress = new Uri(libraryApiHost);
 });
+builder.Services.AddRefitClient<IAuthorClient>().ConfigureHttpClient(c =>
+{
+    c.BaseAddress = new Uri(libraryApiHost);
+});
+
 builder.Services.AddCors();
 var app = builder.Build();
 

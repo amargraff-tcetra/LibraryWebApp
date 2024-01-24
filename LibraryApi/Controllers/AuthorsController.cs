@@ -21,9 +21,18 @@ namespace LibraryApi.Controllers
 
         // GET: api/<AuthorController>
         [HttpGet]
-        public async Task<List<Author>> Get()
+        public async Task<List<Author>> Get([FromQuery]string? key)
         {
-            return await _authorService.GetAsync();
+            var authors = new List<Author>();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                authors = await _authorService.GetAsync();
+            }
+            else
+            {
+                authors = await _authorService.GetAsync(key);
+            }
+            return authors;
         }
 
         // GET api/<AuthorController>/5
