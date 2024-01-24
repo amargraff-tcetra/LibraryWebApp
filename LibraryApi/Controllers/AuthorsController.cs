@@ -44,20 +44,24 @@ namespace LibraryApi.Controllers
 
         // POST api/<AuthorController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<int> Post([FromBody] Author author)
         {
+           return await _authorService.PostAsync(author);
         }
 
         // PUT api/<AuthorController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<bool> Put(int id, [FromBody] Author author)
         {
+            author.id = id;
+            return await _authorService.PutAsync(author);
         }
 
         // DELETE api/<AuthorController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<bool> Delete(int id)
         {
+            return await _authorService.DeleteAsync(id);
         }
     }
 }

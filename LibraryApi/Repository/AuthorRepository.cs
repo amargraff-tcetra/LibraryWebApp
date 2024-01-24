@@ -20,21 +20,31 @@ namespace LibraryApi.Repository
             _connection = new SqlConnection(configuration.GetSection("DB_CONNECTION_STRING").Value);
         }
 
-        public async Task<int> AddAsync(Author entity)
+        public async Task<int> AddAsync(Author author)
         {
-            throw new NotImplementedException();
+            _context.Authors.Add(author);
+            await _context.SaveChangesAsync();
+            return author.id;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var author = await _context.Authors.FirstOrDefaultAsync(a => a.id == id);
+            if(author != null)
+            {
+                _context.Authors.Remove(author);
+            }
+
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<List<Author>> GetAllAsync()
         {
+            //DAPPER METHOD
             var dict = new Dictionary<int, Author>();
             var dapper_authors = (await _connection.QueryAsync<Author, Book, Author>(SELECT_AUTHORS, (a, b) => MapAuthorBooks(dict,a,b)))?.Distinct().ToList() ?? new List<Author>();
 
+            //EF METHOD
             return await _context.Authors
                 .Include(a => a.books)
                 .ToListAsync();
@@ -63,9 +73,18 @@ namespace LibraryApi.Repository
                 .FirstOrDefaultAsync() ?? new Author();
         }
 
-        public async Task<bool> UpdateAsync(Author entity)
+        public async Task<bool> UpdateAsync(Author author)
         {
-            throw new NotImplementedException();
+            var authorToUpdate = await _context.Authors.FirstOrDefaultAsync(a => a.id == author.id);
+            if (authorToUpdate != null)
+            {
+                authorToUpdate.first_name = author.first_name;
+                authorToUpdate.last_name = author.last_name;
+                authorToUpdate.date_of_birth = author.date_of_birth;
+                return await _context.SaveChangesAsync() > 0;
+            }
+
+            return false;
         }
 
 

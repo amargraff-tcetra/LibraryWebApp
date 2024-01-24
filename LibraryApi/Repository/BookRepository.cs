@@ -7,10 +7,13 @@ namespace LibraryApi.Repository
 {
     public class BookRepository : IRepository<Book>
     {
-        IDbConnection _connection;        
+        IDbConnection _connection;
         private static string INSERT_BOOK = "INSERT INTO book (author_id, title, publisher, publication_date, paperback, copies) VALUES (@author_id, @title, @publisher, @publication_date, @paperback, @copies); SELECT SCOPE_IDENTITY();";
+        private static string UPDATE_BOOK = "UPDATE book SET author_id = @author_id, title = @title, publisher = @publisher, publication_date = @publication_date, paperback = @paperback, copies = @copies WHERE id = @id";
         private static string SELECT_BOOK = "SELECT * FROM book b JOIN author a ON b.author_id = a.id";
+        private static string SELECT_BOOK_BY_ID = "SELECT * FROM book b JOIN author a ON b.author_id = a.id WHERE b.id = @id";
         private static string SELECT_BOOK_KEY = "SELECT * FROM book b JOIN author a ON b.author_id = a.id WHERE b.title LIKE '%' + @key + '%'";
+        private static string DELETE_BOOK_BY_ID = "DELETE FROM book WHERE id = @id";
 
         public BookRepository(IConfiguration configuration)
         {
@@ -40,23 +43,24 @@ namespace LibraryApi.Repository
 
         public async Task<Book> GetAsync(int id)
         {
-            IEnumerable<Book> books = new List<Book>();
-            var sql = "SELECT * FROM book b JOIN author a ON b.author_id = a.id WHERE b.id = @id";
             var parameters = new DynamicParameters();
             parameters.Add("@id", id);
-            books = await _connection.QueryAsync<Book, Author, Book>(sql, (b, a) => { b.author = a; return b; }, parameters);
-
-            return books.FirstOrDefault() ?? new Book();
+            var book = (await _connection.QueryAsync<Book, Author, Book>(SELECT_BOOK_BY_ID, (b, a) => { b.author = a; return b; }, parameters)).FirstOrDefault() ?? new Book();
+            return book;
         }
 
-        public Task<bool> UpdateAsync(Book entity)
+        public async Task<bool> UpdateAsync(Book book)
         {
-            throw new NotImplementedException();
+            var result = await _connection.ExecuteAsync(UPDATE_BOOK, book);
+            return result > 0;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var parameters = new DynamicParameters();
+            parameters.Add("@id", id);
+            var result = await _connection.ExecuteAsync(DELETE_BOOK_BY_ID, parameters);
+            return result > 0;
         }
     }
 }

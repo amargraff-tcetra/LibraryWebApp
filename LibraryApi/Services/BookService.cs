@@ -59,25 +59,28 @@ namespace LibraryApi.Services
             return book;
         }
 
+        //ADD BOOK
         public async Task<int> PostAsync(Book entity)
         {
+            var result = 0;
             try
             {
-                throw new NotImplementedException();
+                result = await _bookRepository.AddAsync(entity);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Book Service PostAsync Exception: {ex.Message}");
             }
 
-            return 0;
+            return result;
         }
 
-        public async Task<bool> PutAsync(Book entity)
+        public async Task<bool> PutAsync(Book book)
         {
+            bool result = false;
             try
             {
-                throw new NotImplementedException();
+                result = await _bookRepository.UpdateAsync(book);
             }
             catch (Exception ex)
             {
@@ -89,16 +92,17 @@ namespace LibraryApi.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
+            bool result = false;
             try
             {
-                throw new NotImplementedException();
+                result = await _bookRepository.DeleteAsync(id);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Book Service DeleteAsync Exception: {ex.Message}");
             }
 
-            return false;
+            return result;
         }
     }
 }

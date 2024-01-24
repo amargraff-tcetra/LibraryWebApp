@@ -1,0 +1,36 @@
+POST BOOK
+{
+  "id": 0,
+  "author_id": 1,
+  "title": "The Hobbit",
+  "publisher": "George Allen & Unwin",
+  "publication_date": "1937-09-21T00:00:00.000Z",
+  "paperback": true,
+  "copies": 10
+},
+{
+  "id": 0,
+  "author_id": 19,
+  "title": "The Lion, the Witch and the Wardrobe",
+  "publisher": "Geoffrey Bles",
+  "publication_date": "1950-10-16T00:00:00.000Z",
+  "paperback": true,
+  "copies": 3,
+},
+{
+  "id": 0,
+  "author_id": 20,
+  "title": "Starship Troopers",
+  "publisher": "G.P.Putnam's Sons",
+  "publication_date": "1959-11-05T00:00:00.000Z",
+  "paperback": false,
+  "copies": 3
+}
+
+POST AUTHORS
+{
+  "id": 0,
+  "first_name": "Robert",
+  "last_name": "Heinlein",
+  "date_of_birth": "1907-07-07T00:00:00.000Z",
+}

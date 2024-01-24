@@ -45,29 +45,36 @@ namespace LibraryApi.Controllers
         }
 
         [HttpPost]
-        public async Task Post([FromBody] Book book)
+        public async Task<int> Post([FromBody] Book book)
         {
-            //Book? book = JsonConvert.DeserializeObject<Book>(value);
-
-            if (book != null)
+            var result = 0;
+            try
             {
-                _logger.LogError("Could not deserialize body as Book object");
+                result = await _bookService.PostAsync(book);
+            }catch (Exception ex)
+            {
+                _logger.LogError($"Exception: {ex.Message}");
             }
+
+            return result;
         }
 
-        // PUT api/<BooksController>/5
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] Book book)
+        public async Task<bool> Put([FromBody] Book book)
         {
-            //Book? book = JsonConvert.DeserializeObject<Book>(value);
-
-            if (book != null)
+            var result = false;
+            try
             {
-                _logger.LogError("Could not deserialize body as Book object");
+                result = await _bookService.PutAsync(book);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception: {ex.Message}");
+            }
+
+            return result;
         }
 
-        // DELETE api/<BooksController>/5
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
