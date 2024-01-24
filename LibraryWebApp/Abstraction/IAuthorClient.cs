@@ -12,12 +12,12 @@ namespace LibraryWebApp.Abstraction
         Task<Author> Get(int id);
 
         [Post("/api/authors")]
-        Task Post(Author author);
+        Task<int> Post(Author author);
 
         [Put("/api/authors/{id}")]
-        Task Put(int id, Author author);
+        Task<bool> Put(int id, Author author);
 
         [Delete("/api/authors/{id}")]
-        Task Delete(int id);
+        Task<bool> Delete(int id);
     }
 }
