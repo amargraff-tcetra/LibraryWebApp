@@ -33,7 +33,7 @@ namespace LibraryApi.Repository
         public async Task<List<Author>> GetAllAsync()
         {
             var dict = new Dictionary<int, Author>();
-            var dapper_authors = (await _connection.QueryAsync<Author, Book, Author>(SELECT_AUTHORS, (a, b) => MapAuthorBooks(dict,a,b)))?.Distinct()?.ToList() ?? new List<Author>();
+            var dapper_authors = (await _connection.QueryAsync<Author, Book, Author>(SELECT_AUTHORS, (a, b) => MapAuthorBooks(dict,a,b)))?.Distinct().ToList() ?? new List<Author>();
 
             return await _context.Authors
                 .Include(a => a.books)
@@ -46,8 +46,7 @@ namespace LibraryApi.Repository
             var parameters = new DynamicParameters();
             parameters.Add("@key", key);
             var dict = new Dictionary<int,Author>();
-            var dapper_authors = (await _connection
-                .QueryAsync<Author, Book, Author>(SELECT_KEY_AUTHORS, (a, b) => MapAuthorBooks(dict,a,b), parameters))?.Distinct()?.ToList() ?? new List<Author>();
+            var dapper_authors = (await _connection.QueryAsync<Author, Book, Author>(SELECT_KEY_AUTHORS, (a, b) => MapAuthorBooks(dict,a,b), parameters))?.Distinct().ToList() ?? new List<Author>();
 
             //EF METHOD
             return await _context.Authors
