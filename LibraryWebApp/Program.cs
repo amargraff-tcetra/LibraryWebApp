@@ -15,7 +15,7 @@ builder.Services.AddRefitClient<IBookClient>().ConfigureHttpClient(c =>
 builder.Services.AddCors();
 
 //DI, Ilogger, BookService [X]
-//http client factory [X], refit 
+//http client factory [X], refit [X]
 //IConfiguration (remove reference to environment variables) [X]
 // Refactor connection strings [X]
 // One Example of EntityFramework
