@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryApi.Models
 {
@@ -21,9 +22,12 @@ namespace LibraryApi.Models
         //public int Copies { get; set; }
         //public Author Author { get; set; } = new Author();
 
+
         public int id { get; set; }
         public int author_id { get; set; }
+        [StringLength(200)]
         public string title { get; set; } = string.Empty;
+        [StringLength(200)]
         public string publisher { get; set; } = string.Empty;
         public DateTime publication_date { get; set; }
         public bool paperback { get; set; } = false;

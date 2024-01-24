@@ -11,15 +11,7 @@ builder.Services.AddRefitClient<IBookClient>().ConfigureHttpClient(c =>
 {
     c.BaseAddress = new Uri(libraryApiHost);
 });
-
 builder.Services.AddCors();
-
-//DI, Ilogger, BookService [X]
-//http client factory [X], refit [X]
-//IConfiguration (remove reference to environment variables) [X]
-// Refactor connection strings [X]
-// One Example of EntityFramework
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

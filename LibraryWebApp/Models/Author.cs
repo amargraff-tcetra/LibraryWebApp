@@ -17,7 +17,11 @@ namespace LibraryWebApp.Models
         public string first_name { get; set; } = string.Empty;
         public string last_name { get; set; } = string.Empty;
         public DateTime date_of_birth { get; set; }
+        public List<Book> books { get; set; }
 
-        public Author(){}
+        public Author()
+        {
+            books = new List<Book>();
+        }
     }
 }
