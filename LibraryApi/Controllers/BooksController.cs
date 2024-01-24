@@ -32,9 +32,9 @@ namespace LibraryApi.Controllers
             }
             else
             {
-                books = await _bookService.GetAsync(key);
+                books = await _bookService.GetAsync(key ?? string.Empty);
             }
-
+            
             return books ?? new List<Book>();
         }
 
