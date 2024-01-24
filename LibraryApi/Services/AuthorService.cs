@@ -12,11 +12,6 @@ namespace LibraryApi.Services
             _authorRepository = authorRepository;
         }
 
-        public Task<bool> DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<Author>> GetAsync()
         {
            return await _authorRepository.GetAllAsync();
@@ -32,14 +27,18 @@ namespace LibraryApi.Services
             return await _authorRepository.GetAsync(id);
         }
 
-        public async Task<int> PostAsync(Author entity)
+        public async Task<int> PostAsync(Author author)
         {
-            throw new NotImplementedException();
+            return await _authorRepository.AddAsync(author);
         }
 
-        public async Task<bool> PutAsync(Author entity)
+        public async Task<bool> PutAsync(Author author)
         {
-            throw new NotImplementedException();
+            return await _authorRepository.UpdateAsync(author);
+        }
+        public Task<bool> DeleteAsync(int id)
+        {
+            return _authorRepository.DeleteAsync(id);
         }
     }
 }
