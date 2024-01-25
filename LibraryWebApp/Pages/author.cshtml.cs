@@ -12,8 +12,8 @@ namespace LibraryWebApp.Pages
         public List<Author> Authors { get; set; } = new List<Author>();
         [BindProperty]
         public Author SelectedAuthor { get; set; } = new Author();
-        public string? SearchedFirstName { get; set; }
-        public string? SearchedLastName { get; set; }
+        public string? SearchedFirstName { get; set; } = string.Empty;
+        public string? SearchedLastName { get; set; } = string.Empty;
         public bool AddAuthor { get; set; } = false;
         public bool UpdateAuthor { get; set; } = false;
 
@@ -68,6 +68,7 @@ namespace LibraryWebApp.Pages
                 author.date_of_birth = date_of_birth;
                 result = await _authorClient.Post(author);
             }
+            AddAuthor = false;
         }
 
         public async void OnPostUpdateAuthor(int id,string first_name, string last_name, DateTime date_of_birth) 
@@ -81,6 +82,7 @@ namespace LibraryWebApp.Pages
             };
 
             var result = await _authorClient.Put(id, updated_author);
+            UpdateAuthor = false;
         }
 
         public IActionResult OnPostEditAuthor(int id, string first_name, string last_name, DateTime date_of_birth)

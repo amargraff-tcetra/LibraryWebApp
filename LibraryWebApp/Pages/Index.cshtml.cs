@@ -10,6 +10,9 @@ namespace LibraryWebApp.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IBookClient _bookClient;
         private readonly IAuthorClient _authorClient;
+        public string SearchedTitle { get; set; } = string.Empty;
+        public string SearchedAuthor { get; set; } = string.Empty;
+        public string SearchedPublisher { get; set; } = string.Empty;
         public List<Book> Books { get; set; } = new List<Book>();
         public Book? SelectedBook { get; set; }
 
@@ -24,29 +27,46 @@ namespace LibraryWebApp.Pages
         {
         }
 
-        public async Task<IActionResult> OnPostBooks(string? bookTitleKey)
+        public async Task<IActionResult> OnPostBooks(string? bookTitleKey, string? authorNameKey, string? publisherNameKey)
         {
-            SelectedBook = null;
-            Books = await _bookClient.Get(bookTitleKey?.Trim() ?? string.Empty);
-            return Page();
-        }
+            SearchedTitle = bookTitleKey?.Trim() ?? string.Empty;
+            SearchedAuthor = authorNameKey?.Trim() ?? string.Empty;
+            SearchedPublisher = publisherNameKey?.Trim() ?? string.Empty;
 
-        public async Task<IActionResult> OnPostBooksByAuthor(string? authorNameKey)
-        {
-            SelectedBook = null;
-            authorNameKey = authorNameKey?.Trim() ?? string.Empty;
-            var authors = await _authorClient.Get(authorNameKey) ?? new List<Author>();
-            Books = authors.SelectMany(a => a.books).ToList();
-            Books.ForEach(b => b.author = authors.Where(a => a.id == b.author_id).FirstOrDefault() ?? new Author());
-            return Page();
-        }        
-        
-        public async Task<IActionResult> OnPostBooksByPublisher(string? publisherNameKey)
-        {
-            SelectedBook = null;
-            Books = await _bookClient.Get(string.Empty);
-            publisherNameKey = publisherNameKey?.Trim() ?? string.Empty;
-            Books = Books.Where(b => b.publisher.Contains(publisherNameKey, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            if (string.IsNullOrWhiteSpace(SearchedTitle) && string.IsNullOrWhiteSpace(SearchedAuthor) && string.IsNullOrWhiteSpace(SearchedPublisher))
+            {
+                Books = await _bookClient.Get(SearchedTitle);
+                return Page();
+            }
+
+            var booksByTitle = new List<Book>();
+            if (!string.IsNullOrWhiteSpace(SearchedTitle))
+            {
+                booksByTitle = await _bookClient.Get(SearchedTitle);
+            }
+
+            var booksByAuthor = new List<Book>();
+            if (!string.IsNullOrWhiteSpace(SearchedAuthor))
+            {
+                var authors = await _authorClient.Get(SearchedAuthor) ?? new List<Author>();
+                booksByAuthor = authors.SelectMany(a => a.books).ToList();
+                booksByAuthor.ForEach(b => b.author = authors.Where(a => a.id == b.author_id).FirstOrDefault() ?? new Author());
+            }
+
+            var booksByPublisher = new List<Book>();
+            if (!string.IsNullOrWhiteSpace(SearchedPublisher))
+            {
+                booksByPublisher = await _bookClient.Get(string.Empty);
+                booksByPublisher = booksByPublisher.Where(b => b.publisher.Contains(SearchedPublisher, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }
+
+            booksByAuthor = booksByAuthor.Where(b => !booksByTitle.Select(x => x.id).Contains(b.id)).ToList();
+            booksByPublisher = booksByPublisher.Where(b => !booksByTitle.Select(x => x.id).Contains(b.id)).ToList();
+            booksByPublisher = booksByPublisher.Where(b => !booksByAuthor.Select(x => x.id).Contains(b.id)).ToList();
+
+            Books.AddRange(booksByTitle.Concat(booksByAuthor).Concat(booksByPublisher));
+            Books = Books.Distinct().ToList();
+
             return Page();
         }
     }
