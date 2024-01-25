@@ -23,10 +23,14 @@ body {
 
 .flex-parent {
     display: flex;
-    margin:2px;
+    margin:4px;
 }
 
 .flex-child {
     flex: 2;
-    margin: 2px;
+    margin: 4px;
+}
+
+.book-search{
+    width: min-content;
 }
