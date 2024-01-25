@@ -2,19 +2,102 @@
 @model LibraryWebApp.Pages.AuthorModel
 
 @{
-
+    string ConditionalRender(bool condition)
+    {
+        return condition ? "block" : "none";
+    }
 }
 
-<form asp-page-handler="Author" method="post" class="parent flex-parent">
+
+<div class="parent flex-parent">
+    <form asp-page-handler="SearchAuthor" method="post" class="child flex-child" style="display: @ConditionalRender(!(Model.AddAuthor || Model.UpdateAuthor))">
+        <fieldset class="form-control">
+            <legend>Search Author</legend>
+            <div>
+                <label for="FirstName">First Name:</label>
+                <input type="text" name="first_name" value="" />
+            </div>
+            <div>
+                <label for="LastName">Last Name:</label>
+                <input type="text" name="last_name" value="" />
+            </div>
+            <div>
+                <label>&nbsp;</label>
+                <input type="submit" value="Search" class="submit btn-outline-dark" />
+            </div>
+        </fieldset>
+    </form>
+ </div>
+
+@if (@Model.Authors is not null && @Model.Authors.Count > 0)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td><b>First Name</b></td>
+                <td><b>Last Name</b></td>
+                <td><b>Date of Birth</b></td>
+                <td></td>
+            </tr>
+        </thead>
+
+        @foreach (var author in @Model.Authors)
+        {
+            <tbody>
+                <tr id="@author.id">
+                    <td>@author.first_name</td>
+                    <td>@author.last_name</td>
+                    <td>@author.date_of_birth.ToShortDateString()</td>
+                    <td>
+                        <form asp-page-handler="EditAuthor" method="post">
+                            <div>
+                                <input type="hidden" name="id" value="@author.id"/>
+                                <input type="hidden" name="first_name" value="@author.first_name"/>
+                                <input type="hidden" name="last_name" value="@author.last_name"/>
+                                <input type="hidden" name="date_of_birth" value="@author.date_of_birth"/>
+
+                                <label>&nbsp;</label>
+                                <input type="submit" value="Update" class="submit btn-outline-dark"/>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        }
+        <tbody>
+            <tr>
+                <td>@Model.SearchedFirstName</td>
+                <td>@Model.SearchedLastName</td>
+                <td></td>
+                <td>
+                    <form asp-page-handler="StartAddAuthor" method="post">
+                        <div>
+                            <input type="hidden" name="first_name" value="@Model.SearchedFirstName" />
+                            <input type="hidden" name="last_name" value="@Model.SearchedLastName" />
+
+                            <label>&nbsp;</label>
+                            <input type="submit" value="Add" class="submit btn-outline-dark" />
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    
+}
+
+
+<form id="AddForm" asp-page-handler="AddAuthor" method="post" class="parent flex-parent" style="display: @ConditionalRender(Model.AddAuthor)" }">
     <fieldset class="form-control">
         <legend>Add Author</legend>
         <div class="child flex-child">
             <label>First Name: </label>
-            <input type="text" name="first_name"/>
+            <input type="text" name="first_name" value="@Model.SearchedFirstName"/>
         </div>
         <div>
             <label>Last Name: </label>
-            <input type="text" name="last_name"/>
+            <input type="text" name="last_name" value="@Model.SearchedLastName" />
         </div>
         <div>
             <label>Date of Birth: </label>
@@ -23,6 +106,29 @@
         <div class="child flex-child">
             <label>&nbsp;</label>
             <input type="submit" value="Add" class="submit btn-outline-dark" />
+        </div>
+    </fieldset>
+</form>
+
+<form id="UpdateForm" asp-page-handler="UpdateAuthor" method="post" class="parent flex-parent" style="display: @ConditionalRender(Model.UpdateAuthor)" }">
+    <fieldset class="form-control">
+        <legend>Update Author</legend>
+        <input type="hidden" name="id" value="@Model.SelectedAuthor.id"/>
+        <div class="child flex-child">
+            <label>First Name: </label>
+            <input type="text" name="first_name" value="@Model.SelectedAuthor.first_name"/>
+        </div>
+        <div>
+            <label>Last Name: </label>
+            <input type="text" name="last_name" value="@Model.SelectedAuthor.last_name" />
+        </div>
+        <div>
+            <label>Date of Birth: </label>
+            <input type="date" name="date_of_birth" value="@Model.SelectedAuthor.date_of_birth.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="child flex-child">
+            <label>&nbsp;</label>
+            <input type="submit" value="Update" class="submit btn-outline-dark" />
         </div>
     </fieldset>
 </form>
