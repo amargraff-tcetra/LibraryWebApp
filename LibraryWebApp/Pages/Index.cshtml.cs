@@ -60,6 +60,7 @@ namespace LibraryWebApp.Pages
                 booksByPublisher = booksByPublisher.Where(b => b.publisher.Contains(SearchedPublisher, StringComparison.InvariantCultureIgnoreCase)).ToList();
             }
 
+            //Remove Duplicates by Book.id
             booksByAuthor = booksByAuthor.Where(b => !booksByTitle.Select(x => x.id).Contains(b.id)).ToList();
             booksByPublisher = booksByPublisher.Where(b => !booksByTitle.Select(x => x.id).Contains(b.id)).ToList();
             booksByPublisher = booksByPublisher.Where(b => !booksByAuthor.Select(x => x.id).Contains(b.id)).ToList();
