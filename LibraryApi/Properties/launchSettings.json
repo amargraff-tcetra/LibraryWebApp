@@ -43,10 +43,10 @@
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:7108/swagger",
+      "launchUrl": "http://localhost:7108/swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:7108;http://localhost:5261",
+        "ASPNETCORE_URLS": "http://localhost:7108;http://localhost:5261",
         "DB_CONNECTION_STRING": "Data Source=127.0.0.1,1433;Initial Catalog=MyLibrary;Persist Security Info=True;User ID=sa;Password=SQLserver123!;TrustServerCertificate=True",
       },
       "distributionName": ""
