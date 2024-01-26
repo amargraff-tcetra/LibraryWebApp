@@ -111,27 +111,84 @@
     </form>
 </div>
 
-<div class="min-form">
-    <form id="UpdateForm" asp-page-handler="UpdateAuthor" method="post" class="parent flex-parent" style="display: @ConditionalRender(Model.UpdateAuthor)"}">
-        <fieldset class="form-control">
-            <legend>Update Author</legend>
-            <input type="hidden" name="id" value="@Model.SelectedAuthor.id"/>
-            <div class="child flex-child">
-                <label>First Name: </label>
-                <input type="text" name="first_name" value="@Model.SelectedAuthor.first_name"/>
-            </div>
-            <div>
-                <label>Last Name: </label>
-                <input type="text" name="last_name" value="@Model.SelectedAuthor.last_name" />
-            </div>
-            <div>
-                <label>Date of Birth: </label>
-                <input type="date" name="date_of_birth" value="@Model.SelectedAuthor.date_of_birth.ToString("yyyy-MM-dd")" />
-            </div>
-            <div class="child flex-child">
-                <label>&nbsp;</label>
-                <input type="submit" value="Update" class="submit btn-outline-dark" />
-            </div>
-        </fieldset>
-    </form>
+<div class="parent flex-parent">
+    <div class="min-form">
+        <form id="UpdateForm" asp-page-handler="UpdateAuthor" method="post" class="parent flex-parent" style="display: @ConditionalRender(Model.UpdateAuthor)">
+            <fieldset class="form-control">
+                <legend>Update Author</legend>
+                <input type="hidden" name="id" value="@Model.SelectedAuthor.id"/>
+                <div class="child flex-child">
+                    <label>First Name: </label>
+                    <input type="text" name="first_name" value="@Model.SelectedAuthor.first_name"/>
+                </div>
+                <div>
+                    <label>Last Name: </label>
+                    <input type="text" name="last_name" value="@Model.SelectedAuthor.last_name" />
+                </div>
+                <div>
+                    <label>Date of Birth: </label>
+                    <input type="date" name="date_of_birth" value="@Model.SelectedAuthor.date_of_birth.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="child flex-child">
+                    <label>&nbsp;</label>
+                    <input type="submit" value="Update" class="submit btn-outline-dark" />
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="child flex-child" style="margin-top:0px">
+        <form asp-page-handler="AddBook" method="post" class="parent flex-parent" style="display: @ConditionalRender(Model.UpdateAuthor)">
+            <fieldset class="form-control">
+                <legend>Books</legend>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>Title</td>
+                            <td>Publisher</td>
+                            <td>Publication Date</td>
+                            <td>Paperback</td>
+                            <td>Number of Copies</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    @foreach (var book in Model.SelectedAuthor.books)
+                    {
+                        <tbody>
+                            <tr>
+                                <td>@book.title</td>
+                                <td>@book.publisher</td>
+                                <td>@book.publication_date.ToString("MM-dd-yyyy")</td>
+                                <td>@{var paperback = book.paperback ? "Yes" : "No";} @paperback</td>
+                                <td>@book.copies</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    }
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="hidden" name="authorId" value="@Model.SelectedAuthor.id" />
+                                <input type="text" name="newTitle" placeholder="Title" />
+                            </td>
+                            <td>
+                                <input type="text" name="newPublisher" placeholder="Publisher" />
+                            </td>
+                            <td>
+                                <input type="date" name="newPublicationDate" />
+                            </td>
+                            <td>
+                                <input type="checkbox" name="newPaperback" />
+                            </td>
+                            <td>
+                                <input type="number" name="newCopiesCount" placeholder="Copy Count" />
+                            </td>
+                            <td>
+                                <input type="submit" value="Update" class="submit btn-outline-dark" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+        </form>
+    </div>
 </div>
