@@ -61,6 +61,13 @@ namespace LibraryApi.Controllers
         [HttpDelete("{id}")]
         public async Task<bool> Delete(int id)
         {
+            var author = await _authorService.GetAsync(id);
+
+            if (author.books.Any())
+            {
+                return false;
+            }
+
             return await _authorService.DeleteAsync(id);
         }
     }
