@@ -4,6 +4,7 @@ GO
 
 USE MyLibrary;
 
+--OBJECT LAYER
 --AUTHORS TABLE
 CREATE TABLE [dbo].[author](
 	[id] [int] IDENTITY(1,1) NOT NULL,
@@ -36,6 +37,53 @@ REFERENCES [dbo].[author] ([id])
 
 ALTER TABLE [dbo].[book] CHECK CONSTRAINT [FK_book_author]
 
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'usp_select_books') AND type in (N'P', N'PC'))
+  DROP PROCEDURE [dbo].[usp_select_books]
+GO
+-- =============================================
+-- Author:		Margraff,Aaron
+-- Create date: 1-26-24
+-- Description:	Search books with given query strings
+-- =============================================
+CREATE PROCEDURE usp_select_books @title_key varchar(200),  @author_name_key varchar(100), @publisher_key varchar(200)
+AS
+BEGIN
+	DECLARE @sql AS NVARCHAR(MAX) = N'SELECT DISTINCT b.*, a.* FROM book b JOIN author a ON b.author_id = a.id WHERE ';
+	DECLARE @or_needed AS BIT = 0;
+
+	IF @title_key IS NOT NULL
+		BEGIN
+			SET @or_needed = 1;
+			SET @sql = @sql + N'b.title like ''%'' + @title_key + ''%'' ';
+		END
+
+	IF @author_name_key IS NOT NULL
+		BEGIN
+			IF @or_needed = 1
+				SET @sql = @sql + N'OR '
+
+			SET @or_needed = 1;
+			SET @sql = @sql + N'a.first_name like ''%'' + @author_name_key + ''%'' OR a.last_name  like ''%'' + @author_name_key + ''%'' ';
+		END
+
+	IF @publisher_key IS NOT NULL
+		BEGIN
+			IF @or_needed = 1
+				SET @sql = @sql + N'OR '
+
+			SET @or_needed = 1;
+			SET @sql = @sql + N'b.publisher like ''%'' + @publisher_key + ''%'' ';
+		END
+
+	IF @or_needed = 0
+		SET @sql = N'SELECT DISTINCT b.*, a.* FROM book b JOIN author a ON b.author_id = a.id';
+
+	EXEC sp_executesql @sql, N'@title_key VARCHAR(200), @author_name_key VARCHAR(100), @publisher_key VARCHAR(200)', @title_key, @author_name_key, @publisher_key;
+END
+GO
+
+--DATA LAYER
 --INSERT AUTHORS:
 INSERT INTO author (first_name,last_name,date_of_birth) VALUES ('J.R.R.','Tolkien','1892-01-03'); DECLARE @Tolkien AS INT; SELECT @Tolkien = SCOPE_IDENTITY();
 INSERT INTO author (first_name,last_name,date_of_birth) VALUES ('Douglas','Adams','1952-03-11'); DECLARE @Adams AS INT; SELECT @Adams = SCOPE_IDENTITY();

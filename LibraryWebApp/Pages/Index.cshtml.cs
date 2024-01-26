@@ -10,6 +10,9 @@ namespace LibraryWebApp.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IBookClient _bookClient;
         private readonly IAuthorClient _authorClient;
+        public string SearchedTitle { get; set; } = string.Empty;
+        public string SearchedAuthor { get; set; } = string.Empty;
+        public string SearchedPublisher { get; set; } = string.Empty;
         public List<Book> Books { get; set; } = new List<Book>();
         public Book? SelectedBook { get; set; }
 
@@ -24,29 +27,14 @@ namespace LibraryWebApp.Pages
         {
         }
 
-        public async Task<IActionResult> OnPostBooks(string? bookTitleKey)
+        public async Task<IActionResult> OnPostBooks(string? bookTitleKey, string? authorNameKey, string? publisherNameKey)
         {
-            SelectedBook = null;
-            Books = await _bookClient.Get(bookTitleKey?.Trim() ?? string.Empty);
-            return Page();
-        }
+            SearchedTitle = bookTitleKey?.Trim() ?? string.Empty;
+            SearchedAuthor = authorNameKey?.Trim() ?? string.Empty;
+            SearchedPublisher = publisherNameKey?.Trim() ?? string.Empty;
 
-        public async Task<IActionResult> OnPostBooksByAuthor(string? authorNameKey)
-        {
-            SelectedBook = null;
-            authorNameKey = authorNameKey?.Trim() ?? string.Empty;
-            var authors = await _authorClient.Get(authorNameKey) ?? new List<Author>();
-            Books = authors.SelectMany(a => a.books).ToList();
-            Books.ForEach(b => b.author = authors.Where(a => a.id == b.author_id).FirstOrDefault() ?? new Author());
-            return Page();
-        }        
-        
-        public async Task<IActionResult> OnPostBooksByPublisher(string? publisherNameKey)
-        {
-            SelectedBook = null;
-            Books = await _bookClient.Get(string.Empty);
-            publisherNameKey = publisherNameKey?.Trim() ?? string.Empty;
-            Books = Books.Where(b => b.publisher.Contains(publisherNameKey, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            Books = await _bookClient.Get(SearchedTitle, SearchedAuthor, SearchedPublisher);
+
             return Page();
         }
     }
