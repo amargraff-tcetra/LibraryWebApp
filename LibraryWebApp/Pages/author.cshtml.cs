@@ -17,6 +17,7 @@ namespace LibraryWebApp.Pages
         public string? SearchedLastName { get; set; } = string.Empty;
         public bool AddAuthor { get; set; } = false;
         public bool UpdateAuthor { get; set; } = false;
+        public bool ShowError { get; set; } = false;
 
         public AuthorModel(ILogger<AuthorModel> logger, IAuthorClient authorClient, IBookClient bookClient)
         {
@@ -27,6 +28,7 @@ namespace LibraryWebApp.Pages
 
         public void OnGet()
         {
+            ShowError = false;
             UpdateAuthor = false;
             AddAuthor = false;
         }
@@ -119,6 +121,27 @@ namespace LibraryWebApp.Pages
             var bookId = await _bookClient.Post(bookToAdd);
             bookToAdd.id = bookId;
             SelectedAuthor.books.Add(bookToAdd);
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteBook(int bookId)
+        {
+            var result = await _bookClient.Delete(bookId);
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAuthor(int authorId, int bookCount)
+        {
+            //TODO: Check if Author Has books, if so give warning that books must be removed before author.
+            if (bookCount > 0)
+            {
+                ShowError = true;
+                return Page();
+            }
+            
+            var result = await _authorClient.Delete(authorId);
+
             return Page();
         }
     }

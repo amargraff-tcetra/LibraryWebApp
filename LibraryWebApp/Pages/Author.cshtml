@@ -1,4 +1,5 @@
 ﻿@page
+@addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
 @model LibraryWebApp.Pages.AuthorModel
 
 @{
@@ -6,6 +7,15 @@
     {
         return condition ? "block" : "none";
     }
+}
+
+@if (Model.ShowError)
+{
+    <script type ="text/javascript">
+        window.onload = function () {
+            alert("All of an author's books must be removed\r\nbefore the author can be removed.");
+        }
+    </script>
 }
 
 <div class="parent flex-parent">
@@ -48,8 +58,8 @@
                             <td>@author.first_name</td>
                             <td>@author.last_name</td>
                             <td>@author.date_of_birth.ToShortDateString()</td>
-                            <td>
-                                <form asp-page-handler="EditAuthor" method="post">
+                            <td style="display: flex;margin-bottom: -1px">
+                                <form asp-page-handler="EditAuthor" method="post" style="flex:2;">
                                     <div>
                                         <input type="hidden" name="id" value="@author.id"/>
                                         <input type="hidden" name="first_name" value="@author.first_name"/>
@@ -59,6 +69,11 @@
                                         <label>&nbsp;</label>
                                         <input type="submit" value="Update" class="submit btn-outline-dark"/>
                                     </div>
+                                </form>
+                                <form asp-page-handler="DeleteAuthor" method="post" style="flex:2;">
+                                    <input type="hidden" name="authorId" value="@author.id" />
+                                    <input type="hidden" name="bookCount" value="@author.books.Count()" />
+                                    <input type="submit" value="Delete" class="submit btn-outline-danger" />
                                 </form>
                             </td>
                         </tr>
@@ -137,33 +152,38 @@
         </form>
     </div>
     <div class="child flex-child" style="margin-top:0px">
-        <form asp-page-handler="AddBook" method="post" class="parent flex-parent" style="display: @ConditionalRender(Model.UpdateAuthor)">
-            <fieldset class="form-control">
-                <legend>Books</legend>
-                <table class="table table-hover">
-                    <thead>
+        <fieldset class="parent flex-parent form-control" style="display: @ConditionalRender(Model.UpdateAuthor)">
+            <legend>Books</legend>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>Title</td>
+                        <td>Publisher</td>
+                        <td>Publication Date</td>
+                        <td>Paperback</td>
+                        <td>Number of Copies</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                @foreach (var book in Model.SelectedAuthor.books)
+                {
+                    <tbody>
                         <tr>
-                            <td>Title</td>
-                            <td>Publisher</td>
-                            <td>Publication Date</td>
-                            <td>Paperback</td>
-                            <td>Number of Copies</td>
-                            <td></td>
+                            <td>@book.title</td>
+                            <td>@book.publisher</td>
+                            <td>@book.publication_date.ToString("MM-dd-yyyy")</td>
+                            <td>@{var paperback = book.paperback ? "Yes" : "No";} @paperback</td>
+                            <td>@book.copies</td>
+                            <td>
+                                <form asp-page-handler="DeleteBook" method="post">
+                                    <input type="hidden" name="bookId" value="@book.id" />
+                                    <input type="submit" value="Delete" class="submit btn-outline-danger" />
+                                </form>
+                            </td>
                         </tr>
-                    </thead>
-                    @foreach (var book in Model.SelectedAuthor.books)
-                    {
-                        <tbody>
-                            <tr>
-                                <td>@book.title</td>
-                                <td>@book.publisher</td>
-                                <td>@book.publication_date.ToString("MM-dd-yyyy")</td>
-                                <td>@{var paperback = book.paperback ? "Yes" : "No";} @paperback</td>
-                                <td>@book.copies</td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    }
+                    </tbody>
+                }
+                <form asp-page-handler="AddBook" method="post">
                     <tbody>
                         <tr>
                             <td>
@@ -187,8 +207,8 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
-            </fieldset>
-        </form>
+                </form>
+            </table>
+        </fieldset>
     </div>
 </div>
