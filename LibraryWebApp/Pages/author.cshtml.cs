@@ -9,6 +9,7 @@ namespace LibraryWebApp.Pages
     {
         private ILogger _logger;
         private IAuthorClient _authorClient;
+        private IBookClient _bookClient;
         public List<Author> Authors { get; set; } = new List<Author>();
         [BindProperty]
         public Author SelectedAuthor { get; set; } = new Author();
@@ -17,10 +18,11 @@ namespace LibraryWebApp.Pages
         public bool AddAuthor { get; set; } = false;
         public bool UpdateAuthor { get; set; } = false;
 
-        public AuthorModel(ILogger<AuthorModel> logger, IAuthorClient authorClient)
+        public AuthorModel(ILogger<AuthorModel> logger, IAuthorClient authorClient, IBookClient bookClient)
         {
             _logger = logger;
             _authorClient = authorClient;
+            _bookClient = bookClient;
         }
 
         public void OnGet()
@@ -85,16 +87,10 @@ namespace LibraryWebApp.Pages
             UpdateAuthor = false;
         }
 
-        public IActionResult OnPostEditAuthor(int id, string first_name, string last_name, DateTime date_of_birth)
+        public async Task<IActionResult> OnPostEditAuthor(int id, string first_name, string last_name, DateTime date_of_birth)
         {
             UpdateAuthor = true;
-            SelectedAuthor = new Author()
-            {
-                id = id,
-                first_name = first_name,
-                last_name = last_name,
-                date_of_birth = date_of_birth
-            };
+            SelectedAuthor = await _authorClient.Get(id);
 
             return Page();
         }
@@ -105,6 +101,24 @@ namespace LibraryWebApp.Pages
             SearchedFirstName = first_name;
             SearchedLastName = last_name;
 
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAddBook(int authorId, string newTitle, string newPublisher, DateTime newPublicationDate, bool newPaperback, int newCopiesCount)
+        {
+            var bookToAdd = new Book()
+            {
+                author_id = authorId,
+                title = newTitle,
+                publisher = newPublisher,
+                publication_date = newPublicationDate,
+                paperback = newPaperback,
+                copies = newCopiesCount
+            };
+
+            var bookId = await _bookClient.Post(bookToAdd);
+            bookToAdd.id = bookId;
+            SelectedAuthor.books.Add(bookToAdd);
             return Page();
         }
     }
