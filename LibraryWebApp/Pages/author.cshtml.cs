@@ -124,24 +124,6 @@ namespace LibraryWebApp.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAddBook(int authorId, string newTitle, string newPublisher, DateTime newPublicationDate, bool newPaperback, int newCopiesCount)
-        {
-            var bookToAdd = new Book()
-            {
-                author_id = authorId,
-                title = newTitle,
-                publisher = newPublisher,
-                publication_date = newPublicationDate,
-                paperback = newPaperback,
-                copies = newCopiesCount
-            };
-
-            var bookId = await _bookClient.Post(bookToAdd);
-            bookToAdd.id = bookId;
-            SelectedAuthor.books.Add(bookToAdd);
-            return Page();
-        }
-
         public async Task<IActionResult> OnPostDeleteBook(int bookId)
         {
             var result = await _bookClient.Delete(bookId);
