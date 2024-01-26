@@ -12,8 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IRepository<Book>, BookRepository>();
-builder.Services.AddScoped<IService<Book>, BookService>();
+builder.Services.AddSingleton<BookService, BookService>();
+builder.Services.AddSingleton<BookRepository, BookRepository>();
 builder.Services.AddScoped<IRepository<Author>, AuthorRepository>();
 builder.Services.AddScoped<IService<Author>, AuthorService>();
 builder.Services.AddDbContext<LibraryContext>(options =>
@@ -21,7 +21,6 @@ builder.Services.AddDbContext<LibraryContext>(options =>
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 builder.Logging.ClearProviders().AddConsole();
-
 
 var app = builder.Build();
 

@@ -7,11 +7,11 @@ namespace LibraryApi.Services
 {
     public class BookService: IService<Book>
     {
-        private IRepository<Book> _bookRepository { get; set; }
+        private BookRepository _bookRepository { get; set; }
         private ILogger _logger { get; set; }
 
 
-        public BookService(IRepository<Book> bookRepository, ILogger<BookService> logger)
+        public BookService(BookRepository bookRepository, ILogger<BookService> logger)
         {
             _bookRepository = bookRepository;
             _logger = logger;
@@ -37,6 +37,20 @@ namespace LibraryApi.Services
             try
             {
                 books = await _bookRepository.GetAllAsync(key);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Book Service GetAsync Exception: {ex.Message}");
+            }
+            return books;
+        }        
+        
+        public async Task<List<Book>> GetAsync(string? title_key, string? author_name_key, string? publisher_key)
+        {
+            List<Book> books = new List<Book>();
+            try
+            {
+                books = await _bookRepository.GetAllAsync(title_key, author_name_key, publisher_key);
             }
             catch (Exception ex)
             {

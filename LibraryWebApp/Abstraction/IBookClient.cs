@@ -6,7 +6,7 @@ namespace LibraryWebApp.Abstraction
     public interface IBookClient
     {
         [Get("/api/books")]
-        Task<List<Book>> Get(string? key);
+        Task<List<Book>> Get(string? title_key, string? author_name_key, string? publisher_key);
 
         [Get("/api/books/{id}")]
         Task<Book> Get(int id);
