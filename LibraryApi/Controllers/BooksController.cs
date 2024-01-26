@@ -2,6 +2,7 @@
 using LibraryApi.Repository;
 using LibraryApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using Refit;
 using System.Net;
@@ -13,28 +14,19 @@ namespace LibraryApi.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private IService<Book> _bookService { get; set; }
+        private BookService _bookService { get; set; }
         private ILogger _logger { get; set; }
 
-        public BooksController(IService<Book> bookService, ILogger<BooksController> logger)
+        public BooksController(BookService bookService, ILogger<BooksController> logger)
         {
             _bookService = bookService;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<List<Book>> Get([FromQuery] string? key)
+        public async Task<List<Book>> Get([FromQuery] string? title_key, string? author_name_key, string? publisher_key)
         {
-            var books = new List<Book>();
-            if (string.IsNullOrWhiteSpace(key))
-            {
-                books = await _bookService.GetAsync();
-            }
-            else
-            {
-                books = await _bookService.GetAsync(key ?? string.Empty);
-            }
-            
+            var books = await _bookService.GetAsync(title_key, author_name_key, publisher_key);
             return books ?? new List<Book>();
         }
 

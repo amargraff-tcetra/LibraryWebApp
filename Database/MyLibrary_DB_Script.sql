@@ -49,7 +49,7 @@ GO
 CREATE PROCEDURE usp_select_books @title_key varchar(200),  @author_name_key varchar(100), @publisher_key varchar(200)
 AS
 BEGIN
-	DECLARE @sql AS NVARCHAR(MAX) = N'SELECT b.*, a.* FROM book b JOIN author a ON b.author_id = a.id WHERE ';
+	DECLARE @sql AS NVARCHAR(MAX) = N'SELECT DISTINCT b.*, a.* FROM book b JOIN author a ON b.author_id = a.id WHERE ';
 	DECLARE @or_needed AS BIT = 0;
 
 	IF @title_key IS NOT NULL
@@ -75,6 +75,9 @@ BEGIN
 			SET @or_needed = 1;
 			SET @sql = @sql + N'b.publisher like ''%'' + @publisher_key + ''%'' ';
 		END
+
+	IF @or_needed = 0
+		SET @sql = N'SELECT DISTINCT b.*, a.* FROM book b JOIN author a ON b.author_id = a.id';
 
 	EXEC sp_executesql @sql, N'@title_key VARCHAR(200), @author_name_key VARCHAR(100), @publisher_key VARCHAR(200)', @title_key, @author_name_key, @publisher_key;
 END
